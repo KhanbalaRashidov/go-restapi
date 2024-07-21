@@ -1,6 +1,13 @@
 package repository
 
+import (
+	gorestapi "github.com/KhanbalaRashidov/go-restapi"
+	"github.com/jmoiron/sqlx"
+)
+
 type Authorization interface {
+	CreateUser(user gorestapi.User) (int, error)
+	GetUser(username, password string) (gorestapi.User, error)
 }
 
 type TodoList interface{}
@@ -13,6 +20,8 @@ type Repository struct {
 	TodoItem
 }
 
-func NeRepository() *Repository {
-	return &Repository{}
+func NeRepository(db *sqlx.DB) *Repository {
+	return &Repository{
+		Authorization: NewAuthPostgres(db),
+	}
 }
